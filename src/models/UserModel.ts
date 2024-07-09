@@ -1,6 +1,6 @@
 import mongoose, { Schema, Document } from "mongoose";
 
-interface Message extends Document {
+export interface Message extends Document {
   content: string;
   createdAt: Date;
 }
@@ -18,7 +18,7 @@ const messageSchema: Schema<Message> = new Schema({
   },
 });
 
-interface User {
+export interface User {
   username: string;
   email: string;
   password: string;
@@ -33,6 +33,7 @@ const UserSchema: Schema<User> = new Schema({
   username: {
     type: String,
     required: [true, "Username is required!"],
+    unique: true,
   },
 
   email: {
