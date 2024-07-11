@@ -5,18 +5,21 @@ export interface Message extends Document {
   createdAt: Date;
 }
 
-const messageSchema: Schema<Message> = new Schema({
-  content: {
-    type: String,
-    required: [true, "Message content is required!"],
-  },
+const messageSchema: Schema<Message> = new Schema(
+  {
+    content: {
+      type: String,
+      required: [true, "Message content is required!"],
+    },
 
-  createdAt: {
-    type: Date,
-    required: [true, "Creation Date is required!"],
-    default: Date.now,
+    createdAt: {
+      type: Date,
+      required: [true, "Creation Date is required!"],
+      default: Date.now,
+    },
   },
-});
+  { timestamps: true }
+);
 
 export interface User {
   username: string;
@@ -29,49 +32,52 @@ export interface User {
   messages: Array<Message>;
 }
 
-const UserSchema: Schema<User> = new Schema({
-  username: {
-    type: String,
-    required: [true, "Username is required!"],
-  },
+const UserSchema: Schema<User> = new Schema(
+  {
+    username: {
+      type: String,
+      required: [true, "Username is required!"],
+    },
 
-  email: {
-    type: String,
-    required: [true, "Email is required!"],
-    match: [
-      /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/g,
-      "Please enter valid email address!",
-    ],
-  },
+    email: {
+      type: String,
+      required: [true, "Email is required!"],
+      match: [
+        /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/g,
+        "Please enter valid email address!",
+      ],
+    },
 
-  password: {
-    type: String,
-    required: [true, "Password is required!"],
-  },
+    password: {
+      type: String,
+      required: [true, "Password is required!"],
+    },
 
-  verificationCode: {
-    type: String,
-    required: [true, "Verification is required!"],
-  },
+    verificationCode: {
+      type: String,
+      required: [true, "Verification is required!"],
+    },
 
-  verificationCodeExpiry: {
-    type: Date,
-    required: [true, "Verification Code Expiry is required!"],
-  },
+    verificationCodeExpiry: {
+      type: Date,
+      required: [true, "Verification Code Expiry is required!"],
+    },
 
-  isVerified: {
-    type: Boolean,
-    default: false,
-    required: [true, "Verification Code Expiry is required!"],
-  },
+    isVerified: {
+      type: Boolean,
+      default: false,
+      required: [true, "Verification Code Expiry is required!"],
+    },
 
-  isAcceptingMessages: {
-    type: Boolean,
-    default: true,
-  },
+    isAcceptingMessages: {
+      type: Boolean,
+      default: true,
+    },
 
-  messages: [messageSchema],
-});
+    messages: [messageSchema],
+  },
+  { timestamps: true }
+);
 
 export const UserModel =
   (mongoose.models.users as mongoose.Model<User>) ||
