@@ -4,6 +4,26 @@ import bcrypt from "bcryptjs";
 import { sendVerificationEmail } from "@/helpers/sendVerificationMail";
 import { ResponseJson } from "@/lib/ResponseJson";
 
+async function sendResendMail(
+  email: string,
+  username: string,
+  verificationCode: string,
+  message: string,
+  statusCode: number
+) {
+  const verificationEmail = await sendVerificationEmail(
+    email,
+    username,
+    verificationCode
+  );
+
+  if (!verificationEmail.success) {
+    console.log("Err while sending mail");
+  } else {
+    return ResponseJson(true, message, statusCode);
+  }
+}
+
 export const POST = async (request: Request) => {
   await connectDB();
 
@@ -22,7 +42,7 @@ export const POST = async (request: Request) => {
     });
 
     if (existingUserByUsernameVerified) {
-      ResponseJson(false, "Username is already taken", 400);
+      return ResponseJson(false, "Username is already taken", 400);
     }
 
     // Checking if the email is unique or not
@@ -30,7 +50,7 @@ export const POST = async (request: Request) => {
 
     if (existingUserByEmail) {
       if (existingUserByEmail.isVerified) {
-        ResponseJson(false, "User already exists. Please Login", 400);
+        return ResponseJson(false, "User already exists. Please Login", 400);
       } else {
         const hashedPassword = bcrypt.hashSync(password, 10);
 
@@ -42,12 +62,20 @@ export const POST = async (request: Request) => {
         existingUserByEmail.verificationCodeExpiry = verificationCodeExpiry;
 
         await existingUserByEmail.save();
+
+        return sendResendMail(
+          email,
+          username,
+          verificationCode,
+          "Mail Sent to exisiting user, Please enter verification code.",
+          200
+        );
       }
     } else {
       // Saving the user in db if email is unique.
       const hashedPassword = bcrypt.hashSync(password, 10);
 
-      const verificationCode = Math.floor(Math.random() * 90000);
+      const verificationCode = Math.floor(Math.random() * 90000).toString();
 
       const verificationCodeExpiry = new Date();
       verificationCodeExpiry.setHours(verificationCodeExpiry.getHours() + 1);
@@ -65,19 +93,20 @@ export const POST = async (request: Request) => {
 
       await newUser.save();
 
-      ResponseJson(true, "User created successfully.", 201);
+      return sendResendMail(
+        email,
+        username,
+        verificationCode,
+        "User created successfully, Please verify your email by entering verification code send to your email.",
+        201
+      );
     }
-
-    const verificationEmail = await sendVerificationEmail(username, email);
-
-    if (!verificationEmail.success) {
-      console.log("Err while sending mail");
-    } else {
-      ResponseJson(true, "Mail Sent, Please enter verification code.", 200);
-    }
-    
   } catch (error) {
     console.log("SOMETHING WENT WRONG WHILE SIGNING UP USER", error);
-    ResponseJson(false, "SOMETHING WENT WRONG WHILE SIGNING UP USER", 500);
+    return ResponseJson(
+      false,
+      "SOMETHING WENT WRONG WHILE SIGNING UP USER",
+      500
+    );
   }
 };

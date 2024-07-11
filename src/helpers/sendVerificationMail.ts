@@ -4,7 +4,8 @@ import { EmailTemplate } from "../../email/EmailTemplate";
 
 export const sendVerificationEmail = async (
   email: string,
-  username: string
+  username: string,
+  verificationCode: string
 ): Promise<ApiResponseType> => {
   try {
     await resend.emails.send({
@@ -12,7 +13,7 @@ export const sendVerificationEmail = async (
       to: email,
       subject: "MysterMsg | Verification Email",
       text: `Welcome ${username}`,
-      react: EmailTemplate({ username }),
+      react: EmailTemplate({ username, verificationCode }),
     });
     return { success: true, message: "Mail sent to ur email!" };
   } catch (error) {
