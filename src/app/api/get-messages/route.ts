@@ -4,6 +4,7 @@ import { connectDB } from "@/lib/connectDB";
 import { ResponseJson } from "@/lib/ResponseJson";
 import { UserModel } from "@/models/UserModel";
 import mongoose from "mongoose";
+import { NextResponse } from "next/server";
 
 export const GET = async (request: Request) => {
   const session = await getServerSession(authOptions);
@@ -33,7 +34,12 @@ export const GET = async (request: Request) => {
         400
       );
     }
-    return ResponseJson(true, `${user[0].messages}`, 200);
+
+    console.log(user[0].messages);
+    return NextResponse.json(
+      { success: true, messages: user[0].messages },
+      { status: 200 }
+    );
   } catch (error) {
     console.log("SOMETHING WENT WRONG WHILE GETTING USER");
     return ResponseJson(false, "SOMETHING WENT WRONG WHILE GETTING USER", 500);

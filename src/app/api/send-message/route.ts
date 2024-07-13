@@ -27,7 +27,11 @@ export const POST = async (request: Request) => {
 
     user.save();
 
-    return ResponseJson(true, "Message sent successfully", 200);
+    return ResponseJson(
+      true,
+      `Message sent successfully ${user.messages}`,
+      200
+    );
   } catch (error) {
     console.log("SOMETHING WENT WRONG WHILE GETTING USER");
     return ResponseJson(

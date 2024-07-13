@@ -45,7 +45,6 @@ const SignUpPage = () => {
         data
       );
       toast.success("Sign Up Successful");
-      console.log(response);
       router.push(`/auth/verify/${username}`);
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
@@ -64,7 +63,6 @@ const SignUpPage = () => {
             `/api/auth/check-unique-username?username=${username}`
           );
           setUsernameCheckMessage(response.data.message);
-          console.log(response);
         }
       } catch (error) {
         console.log(error);

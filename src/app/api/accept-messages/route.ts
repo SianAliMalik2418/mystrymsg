@@ -8,6 +8,7 @@ import { NextResponse } from "next/server";
 export const POST = async (request: Request) => {
   try {
     const { isAcceptingMessages } = await request.json();
+    console.log(isAcceptingMessages)
     const session = await getServerSession(authOptions);
 
     const sessionUser = session?.user;
@@ -27,7 +28,7 @@ export const POST = async (request: Request) => {
     user.isAcceptingMessages = isAcceptingMessages;
     user.save();
 
-    return ResponseJson(true, "Message Recieving status changed!", 200);
+    return ResponseJson(true, `${user}`, 200);
   } catch (error) {
     console.log("SOMETHING WENT WRONG WHILE UPDATING MESSAGE STATUS!", error);
     return ResponseJson(

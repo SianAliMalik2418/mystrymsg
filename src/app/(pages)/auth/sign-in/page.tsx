@@ -10,6 +10,7 @@ import { toast } from "sonner";
 import { signInSchema } from "@/schemas/signInSchema";
 import { signIn } from "next-auth/react";
 import { ApiResponseType } from "@/types/ApiResponseType";
+import { useRouter } from "next/navigation";
 
 const SignInPage = () => {
   const {
@@ -24,8 +25,9 @@ const SignInPage = () => {
     },
   });
 
+  const router = useRouter();
+
   const handleSignIn = handleSubmit(async (data) => {
-    console.log(data);
 
     try {
       const response = await signIn("credentials", {
@@ -38,6 +40,8 @@ const SignInPage = () => {
         throw new Error();
       }
       toast.success("Sign In Successful");
+      router.push("/dashboard");
+      router.refresh();
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
         console.log(error);

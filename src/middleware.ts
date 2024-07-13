@@ -5,23 +5,22 @@ export { default } from "next-auth/middleware";
 
 // This function can be marked `async` if using `await` inside
 export async function middleware(request: NextRequest) {
-  const token = await getToken({ req: request });
-  console.log(token)
+  const token = await getToken({
+    req: request,
+    secret: process.env.NEXT_AUTH_SECRET,
+  });
 
   const { pathname } = request.nextUrl;
 
-  if (
-    token &&
-    (pathname.startsWith("/sign-in") ||
-      pathname.startsWith("/sign-in") ||
-      pathname.startsWith("/verify") ||
-      pathname.startsWith("/"))
-  ) {
-    return NextResponse.redirect(new URL("/dashboard", request.url));
-  }
+  const authPaths = ["/auth/sign-in", "/auth/sign-up", "/auth/verify", "/"];
 
-  if (!token && pathname.startsWith("/dashboard")) {
-    return NextResponse.redirect(new URL("/auth/sign-in", request.url));
+  if (token) {
+    if (authPaths.includes(pathname))
+      return NextResponse.redirect(new URL("/dashboard", request.url));
+  } else {
+    if (pathname.startsWith("/dashboard")) {
+      return NextResponse.redirect(new URL("/auth/sign-in", request.url));
+    }
   }
 }
 

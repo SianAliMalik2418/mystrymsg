@@ -1,27 +1,31 @@
+import { authOptions } from "@/app/api/auth/[...nextauth]/options";
+import { getServerSession } from "next-auth";
 import Link from "next/link";
 import React from "react";
+import LogoutBtn from "./LogoutBtn";
 
-const Navbar = () => {
+const Navbar = async () => {
+  const session = await getServerSession(authOptions);
+
   const navLinks = [
     {
       label: "Home",
       href: "/",
     },
+
     {
-      label: "Dashboard",
-      href: "/dashboard",
-    },
-    {
-      label: "Sign Up",
-      href: "/auth/sign-up",
+      label: `${session ? "Dashboard" : "Sign In"}`,
+      href: `${session ? "/dashboard" : "/auth/sign-in"}`,
     },
   ];
 
   return (
     <div className=" w-full bg-zinc-900 text-white flex items-center justify-between px-40 py-7">
-      <h1 className="text-2xl font-bold">
+      <Link href={"/"} className="text-2xl font-bold">
         mystry<span className="text-red-600">msg.</span>
-      </h1>
+      </Link>
+
+      {session && <div>Hello {session.user.username}</div>}
 
       <div>
         <ul className="flex items-center gap-5">
@@ -32,6 +36,8 @@ const Navbar = () => {
               </li>
             </Link>
           ))}
+
+          {session && <LogoutBtn />}
         </ul>
       </div>
     </div>

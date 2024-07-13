@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import "./globals.css";
+import "../globals.css";
 import SessionWrapper from "@/components/session/SessionWrapper";
 import Container from "@/components/ui/Container";
 import NextTopLoader from "nextjs-toploader";
@@ -27,7 +27,7 @@ export default function RootLayout({
           <Navbar />
           <Container>
             {children}
-            <Toaster richColors />
+            <Toaster richColors theme="dark" />
           </Container>
         </SessionWrapper>
       </body>
