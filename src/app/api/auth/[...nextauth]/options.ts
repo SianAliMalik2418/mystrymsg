@@ -4,6 +4,7 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import { connectDB } from "@/lib/connectDB";
 import { UserModel } from "@/models/UserModel";
 import bcrypt from "bcryptjs";
+import { ResponseJson } from "@/lib/ResponseJson";
 
 export const authOptions: AuthOptions = {
   providers: [
@@ -15,20 +16,13 @@ export const authOptions: AuthOptions = {
         const { email, password } = credentials;
         console.log(credentials);
 
-        try {
           await connectDB();
-          console.log("1 log")
 
           const user = await UserModel.findOne({ email });
-          console.log("2 log")
-
 
           if (!user) {
             throw new Error("Invalid Credentials!");
           }
-
-          
-
 
           const isPasswordMatch = bcrypt.compareSync(password, user.password);
 
@@ -41,10 +35,8 @@ export const authOptions: AuthOptions = {
           }
 
           return user;
-        } catch (error: any) {
-          throw new Error("Something went wrong while signing up", error);
-        }
-      },
+        } 
+    
     }),
   ],
 

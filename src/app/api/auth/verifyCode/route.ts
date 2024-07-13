@@ -41,7 +41,7 @@ export const POST = async (request: Request) => {
     return ResponseJson(
       true,
       "Invalid Code.Please recheck your code and try again!",
-      200
+      400
     );
   } catch (error) {
     console.log("SOMETHING WENT WRONG WHILE SIGNING UP USER", error);

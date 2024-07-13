@@ -2,6 +2,10 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import SessionWrapper from "@/components/session/SessionWrapper";
+import Container from "@/components/ui/Container";
+import NextTopLoader from "nextjs-toploader";
+import { Toaster } from "@/components/ui/sonner";
+import Navbar from "@/components/Navbar/Navbar";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -18,7 +22,14 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <SessionWrapper>{children}</SessionWrapper>
+        <SessionWrapper>
+          <NextTopLoader color="gray" />
+          <Navbar />
+          <Container>
+            {children}
+            <Toaster richColors />
+          </Container>
+        </SessionWrapper>
       </body>
     </html>
   );
